@@ -14,6 +14,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     Button byeButton;
+    Button greetButton;
     TextView textMsg;
 
     @Override
@@ -33,12 +34,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
         byeButton = (Button) findViewById(R.id.bye_button);
+        greetButton = (Button) findViewById(R.id.greet_button);
         textMsg = (TextView) findViewById(R.id.textView);
 
         byeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 textMsg.setText("Bye");
+            }
+        });
+
+        greetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textMsg.setText("HelloWorld");
             }
         });
     }
