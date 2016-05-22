@@ -24,37 +24,32 @@ public class MainActivityFragment extends Fragment {
     ArrayAdapter<String> contactsListAdapter;
 
     public MainActivityFragment() {
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         // Fake data to populate the list of contacts
         String[] names ={
-                "John",
-                "Mary",
-                "Joaquin",
-                "Jane",
-                "Elena",
-                "Maurice",
-                "Filemon",
-                "Teofila"
+                "John", "Mary", "Joe", "Jane", "Elena","Maud", "Phil", "Teo", "Nemo"
+        };
+
+        Integer [] images = {
+                R.drawable.face_1, R.drawable.face_2, R.drawable.face_3,
+                R.drawable.face_4, R.drawable.face_5, R.drawable.face_6,
+                R.drawable.face_7, R.drawable.face_8, R.drawable.face_9
         };
 
         contactsList = new ArrayList<String>(Arrays.asList(names));
         contactsListAdapter =
-                new ArrayAdapter<String>(
-                        getActivity(),        // The current context
-                        R.layout.my_list_row, // layout id
-                        R.id.contact_name,    // textview to populate.
-                        names);
+                // new ArrayAdapter<String>(
+                new MyListAdapter(
+                        getActivity(), names, images);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        final ListView listView = (ListView) rootView.findViewById(R.id.listView);
+        final ListView listView = (ListView) rootView.findViewById(R.id.contact_list_view);
         listView.setAdapter(contactsListAdapter);
 
         listView.setOnItemClickListener(
