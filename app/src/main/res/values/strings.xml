@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">MyHelloWorld</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Menu label for refreshing app data -->
+    <string name="action_refresh" translatable="false">Refresh</string>
+
 </resources>

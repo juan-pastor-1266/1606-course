@@ -3,6 +3,9 @@ package com.example.japf.myhelloworld;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.japf.myhelloworld.R.menu.menu_fragment;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -23,7 +28,27 @@ public class MainActivityFragment extends Fragment {
     List<String> contactsList;
     ArrayAdapter<String> contactsListAdapter;
 
-    public MainActivityFragment() {
+    public MainActivityFragment() { }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(menu_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        int id = item.getItemId();
+        if (id == R.id.action_refresh){
+            Toast.makeText(getContext(), "Refreshing from fragment", Toast.LENGTH_LONG).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
