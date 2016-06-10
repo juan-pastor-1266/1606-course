@@ -5,4 +5,30 @@
     <!-- Menu label for refreshing app data -->
     <string name="action_refresh" translatable="false">Refresh</string>
 
+    <!-- SETTINGS %%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="pref_hotel_key">Hotel_Name</string>
+    <string name="pref_hotel_label">Enter Hotel_Name</string>
+
+    <!-- Menu labels for checkboxes preferences -->
+    <string name="pref_show_prices">Show Sites Prices</string>
+    <string name="pref_show_prices_summ">If true shows three best prices in Details</string>
+
+    <!-- Menu labels for list preferences -->
+    <string name="pref_location">Select preferred URL</string>
+    <string name="pref_location_default">Spain</string>
+
+    <string-array name="pref_site_names">
+        <item>Malasya</item>
+        <item>France</item>
+        <item>Spain</item>
+    </string-array>
+
+    <string-array name="pref_site_wiki_uris">
+        <item>https://es.wikipedia.org/wiki/Malasia</item>
+        <item>https://es.wikipedia.org/wiki/Lille</item>
+        <item>https://es.wikipedia.org/wiki/Madrid</item>
+    </string-array>
+
 </resources>

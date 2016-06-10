@@ -48,6 +48,11 @@ public class MainActivityFragment extends Fragment {
             Toast.makeText(getContext(), "Refreshing from fragment", Toast.LENGTH_LONG).show();
             return true;
         }
+        /*
+        else if (id == R.id.action_settings){
+            startActivity(new Intent(getActivity(), SettingsActivity.class));
+        }
+        */
         return super.onOptionsItemSelected(item);
     }
 
