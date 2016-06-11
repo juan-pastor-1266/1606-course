@@ -10,6 +10,24 @@
     tools:showIn="@layout/activity_country">
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/country_name"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="87dp" />
 
-
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/country_info"
+        android:layout_below="@+id/country_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="66dp"
+        android:editable="false" />
 </RelativeLayout>

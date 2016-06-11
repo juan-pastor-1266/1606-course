@@ -90,7 +90,31 @@ public class MainActivityFragment extends Fragment {
                         String name = ((TextView) view.findViewById(R.id.contact_name)).getText().toString();
                         Toast.makeText(getContext(), name, Toast.LENGTH_LONG).show();
                         */
-                        startActivity(new Intent(getActivity(), CountryActivity.class));
+                        //startActivity(new Intent(getActivity(), CountryActivity.class));
+                        String countryData = "{\"geonames\": [{\n" +
+                                "  \"continent\": \"EU\",\n" +
+                                "  \"capital\": \"Berlino\",\n" +
+                                "  \"languages\": \"de\",\n" +
+                                "  \"geonameId\": 2921044,\n" +
+                                "  \"south\": 47.275776,\n" +
+                                "  \"isoAlpha3\": \"DEU\",\n" +
+                                "  \"north\": 55.055637,\n" +
+                                "  \"fipsCode\": \"GM\",\n" +
+                                "  \"population\": \"81802257\",\n" +
+                                "  \"east\": 15.039889,\n" +
+                                "  \"isoNumeric\": \"276\",\n" +
+                                "  \"areaInSqKm\": \"357021.0\",\n" +
+                                "  \"countryCode\": \"DE\",\n" +
+                                "  \"west\": 5.865639,\n" +
+                                "  \"countryName\": \"Germania\",\n" +
+                                "  \"continentName\": \"Europa\",\n" +
+                                "  \"currencyCode\": \"EUR\"\n" +
+                                "}]}";
+
+                        Intent intent = new Intent(getActivity(), CountryActivity.class)
+                                                       .putExtra(Intent.EXTRA_TEXT, countryData);
+                        startActivity(intent);
+
                     }
                 }
         );
