@@ -1,6 +1,7 @@
 package com.example.japf.myhelloworld;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,6 +36,9 @@ public class MainActivityFragment extends Fragment {
     List<String> contactsList;
     ArrayAdapter<String> contactsListAdapter;
 
+    String selectedCountry = "DE";
+    String selectedLanguage ="it";
+
     public MainActivityFragment() {
     }
 
@@ -42,6 +46,12 @@ public class MainActivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        SharedPreferences mySettings = getActivity().getSharedPreferences("pref_general", 0);
+        Log.i("MainActivityFragment", mySettings.getAll().toString());
+        selectedCountry = mySettings.getString("pref_country_key", "DE");
+        Log.i("MainActivityFragment", "Country -> " + selectedCountry);
+
     }
 
     @Override
@@ -53,16 +63,10 @@ public class MainActivityFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            //Toast.makeText(getContext(), "Refreshing from fragment", Toast.LENGTH_LONG).show();
             FetchCountryDataTask getDataTask = new FetchCountryDataTask();
             getDataTask.execute();
             return true;
         }
-        /*
-        else if (id == R.id.action_settings){
-            startActivity(new Intent(getActivity(), SettingsActivity.class));
-        }
-        */
         return super.onOptionsItemSelected(item);
     }
 
@@ -83,7 +87,6 @@ public class MainActivityFragment extends Fragment {
 
         contactsList = new ArrayList<String>(Arrays.asList(names));
         contactsListAdapter =
-                // new ArrayAdapter<String>(
                 new MyListAdapter(
                         getActivity(), names, images);
 
@@ -97,11 +100,6 @@ public class MainActivityFragment extends Fragment {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                        // Debug 1:
-                        /*
-                        String name = ((TextView) view.findViewById(R.id.contact_name)).getText().toString();
-                        Toast.makeText(getContext(), name, Toast.LENGTH_LONG).show();
-                        */
                         String countryData = "{\"geonames\": [{\n" + "  \"continent\": \"VOID\",\n" + "}]}";
 
                         Intent intent = new Intent(getActivity(), CountryActivity.class)
@@ -128,8 +126,8 @@ class FetchCountryDataTask extends AsyncTask<Void, Void, Void> {
         String baseUrl =
                 "http://api.geonames.org/countryInfoJSON?"+
                         "formatted=true"+
-                        "&lang=it"+
-                        "&country=DE"+
+                        "&lang="     + selectedLanguage +
+                        "&country="  + selectedCountry +
                         "&username=demo"+
                         "&style=full";
 

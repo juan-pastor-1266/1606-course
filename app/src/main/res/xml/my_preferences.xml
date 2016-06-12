@@ -14,18 +14,18 @@
     <PreferenceCategory android:title="Locations" />
 
         <EditTextPreference
-            android:key="@string/pref_hotel_key"
-            android:title="@string/pref_hotel_label"
-            android:defaultValue="@string/pref_location_default"
+            android:key="@string/pref_country_key"
+            android:title="@string/pref_country_label"
+            android:defaultValue="@string/pref_country_default"
             android:inputType="text"
             android:singleLine="true" />
 
         <ListPreference
             android:key="pref_location"
-            android:title="@string/pref_location"
-            android:dialogTitle="@string/pref_location"
-            android:entries="@array/pref_site_names"
-            android:entryValues="@array/pref_site_wiki_uris"
-            android:defaultValue="@string/pref_location_default" />
+            android:title="@string/pref_country"
+            android:dialogTitle="@string/pref_country"
+            android:entries="@array/pref_country_names"
+            android:entryValues="@array/pref_country_codes"
+            android:defaultValue="@string/pref_country_default" />
 
 </PreferenceScreen>
