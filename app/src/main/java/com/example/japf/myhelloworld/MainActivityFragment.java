@@ -1,8 +1,10 @@
 package com.example.japf.myhelloworld;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,8 +14,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,24 +35,27 @@ public class MainActivityFragment extends Fragment {
     List<String> contactsList;
     ArrayAdapter<String> contactsListAdapter;
 
-    public MainActivityFragment() { }
+    public MainActivityFragment() {
+    }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(menu_fragment, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_refresh){
-            Toast.makeText(getContext(), "Refreshing from fragment", Toast.LENGTH_LONG).show();
+        if (id == R.id.action_refresh) {
+            //Toast.makeText(getContext(), "Refreshing from fragment", Toast.LENGTH_LONG).show();
+            FetchCountryDataTask getDataTask = new FetchCountryDataTask();
+            getDataTask.execute();
             return true;
         }
         /*
@@ -61,11 +71,11 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Fake data to populate the list of contacts
-        String[] names ={
-                "John", "Mary", "Joe", "Jane", "Elena","Maud", "Phil", "Teo", "Nemo"
+        String[] names = {
+                "John", "Mary", "Joe", "Jane", "Elena", "Maud", "Phil", "Teo", "Nemo"
         };
 
-        Integer [] images = {
+        Integer[] images = {
                 R.drawable.face_1, R.drawable.face_2, R.drawable.face_3,
                 R.drawable.face_4, R.drawable.face_5, R.drawable.face_6,
                 R.drawable.face_7, R.drawable.face_8, R.drawable.face_9
@@ -86,33 +96,16 @@ public class MainActivityFragment extends Fragment {
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        // Debug 1:
                         /*
                         String name = ((TextView) view.findViewById(R.id.contact_name)).getText().toString();
                         Toast.makeText(getContext(), name, Toast.LENGTH_LONG).show();
                         */
-                        //startActivity(new Intent(getActivity(), CountryActivity.class));
-                        String countryData = "{\"geonames\": [{\n" +
-                                "  \"continent\": \"EU\",\n" +
-                                "  \"capital\": \"Berlino\",\n" +
-                                "  \"languages\": \"de\",\n" +
-                                "  \"geonameId\": 2921044,\n" +
-                                "  \"south\": 47.275776,\n" +
-                                "  \"isoAlpha3\": \"DEU\",\n" +
-                                "  \"north\": 55.055637,\n" +
-                                "  \"fipsCode\": \"GM\",\n" +
-                                "  \"population\": \"81802257\",\n" +
-                                "  \"east\": 15.039889,\n" +
-                                "  \"isoNumeric\": \"276\",\n" +
-                                "  \"areaInSqKm\": \"357021.0\",\n" +
-                                "  \"countryCode\": \"DE\",\n" +
-                                "  \"west\": 5.865639,\n" +
-                                "  \"countryName\": \"Germania\",\n" +
-                                "  \"continentName\": \"Europa\",\n" +
-                                "  \"currencyCode\": \"EUR\"\n" +
-                                "}]}";
+                        String countryData = "{\"geonames\": [{\n" + "  \"continent\": \"VOID\",\n" + "}]}";
 
                         Intent intent = new Intent(getActivity(), CountryActivity.class)
-                                                       .putExtra(Intent.EXTRA_TEXT, countryData);
+                                .putExtra(Intent.EXTRA_TEXT, countryData);
                         startActivity(intent);
 
                     }
@@ -121,4 +114,82 @@ public class MainActivityFragment extends Fragment {
 
         return rootView;
     }
+
+
+
+class FetchCountryDataTask extends AsyncTask<Void, Void, Void> {
+    private final String LOG_TAG = FetchCountryDataTask.class.getSimpleName();
+
+    @Override
+    protected Void doInBackground(Void... params) {
+
+        HttpURLConnection urlConnection = null;
+        String jsonMsg = null;
+        String baseUrl =
+                "http://api.geonames.org/countryInfoJSON?"+
+                        "formatted=true"+
+                        "&lang=it"+
+                        "&country=DE"+
+                        "&username=demo"+
+                        "&style=full";
+
+        urlConnection = connect(baseUrl);
+        jsonMsg = getDataAndCloseConnection(urlConnection);
+        return null;
+    }
+
+
+    private HttpURLConnection connect(String baseUrl) {
+        HttpURLConnection urlConnection = null;
+
+        try {
+            URL url = new URL(baseUrl);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            urlConnection = null;
+        }
+        return urlConnection;
+    }
+
+    private String getDataAndCloseConnection(HttpURLConnection urlConnection){
+        String rvcMsg = null;
+        BufferedReader reader = null;
+
+        try {
+            InputStream inputStream = urlConnection.getInputStream();
+            if (inputStream != null){
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+                String line;
+                StringBuffer buffer = new StringBuffer();
+                while ((line = reader.readLine()) != null){
+                    buffer.append(line + "\n");
+                }
+                if (buffer.length() != 0){
+                    rvcMsg = buffer.toString();
+                }
+            }
+        }
+        catch (IOException e){
+            Log.e("MainActivityFragment", "Error accesing stream", e);
+        }
+        finally {
+            if (urlConnection != null){
+                urlConnection.disconnect();
+            }
+            if (reader != null){
+                try{
+                    reader.close();
+                } catch (IOException e) {
+                    Log.e("MainActivityFragment", "Error closing stream", e);
+                }
+            }
+        }
+
+        Log.i("MainActivityFragment", rvcMsg);
+        return rvcMsg;
+    }
+}
 }

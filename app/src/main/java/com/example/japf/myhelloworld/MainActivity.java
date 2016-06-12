@@ -19,17 +19,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*
-        // Display the fragment as the main content.
-        FragmentManager mFragmentManager = getFragmentManager();
-        FragmentTransaction mFragmentTransaction = mFragmentManager
-                .beginTransaction();
-        SettingsFragment mPrefsFragment = new SettingsFragment();
-        mFragmentTransaction.replace(android.R.id.content, mPrefsFragment);
-        mFragmentTransaction.commit();
-
-        */
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
