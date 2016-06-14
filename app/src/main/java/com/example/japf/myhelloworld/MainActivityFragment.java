@@ -16,6 +16,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,8 +37,13 @@ import static com.example.japf.myhelloworld.R.menu.menu_fragment;
  */
 public class MainActivityFragment extends Fragment {
 
-    List<String> contactsList;
-    ArrayAdapter<String> contactsListAdapter;
+    String jsonCountryData = "Empty Data";
+    List<String> countryNames;
+    ArrayAdapter<String> countryNamesListAdapter;
+
+    String countryQuery ="http://api.geonames.org/countryInfoJSON?formatted=true&lang=it&country=&username=coursejun2016&style=full";
+    String testQuery ="http://api.geonames.org/findNearbyStreetsOSMJSON?formatted=true&lat=37.451&lng=-122.18&username=coursejun2016&style=full";
+
 
     String selectedCountry = "DE";
     String selectedLanguage ="it";
@@ -46,12 +55,8 @@ public class MainActivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
         SharedPreferences mySettings = getActivity().getSharedPreferences("pref_general", 0);
-        Log.i("MainActivityFragment", mySettings.getAll().toString());
         selectedCountry = mySettings.getString("pref_country_key", "DE");
-        Log.i("MainActivityFragment", "Country -> " + selectedCountry);
-
     }
 
     @Override
@@ -74,26 +79,24 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Fake data to populate the list of contacts
-        String[] names = {
+
+        // Fake data to populate the list of countries
+        String[] cData = {
                 "John", "Mary", "Joe", "Jane", "Elena", "Maud", "Phil", "Teo", "Nemo"
         };
 
-        Integer[] images = {
-                R.drawable.face_1, R.drawable.face_2, R.drawable.face_3,
-                R.drawable.face_4, R.drawable.face_5, R.drawable.face_6,
-                R.drawable.face_7, R.drawable.face_8, R.drawable.face_9
-        };
-
-        contactsList = new ArrayList<String>(Arrays.asList(names));
-        contactsListAdapter =
-                new MyListAdapter(
-                        getActivity(), names, images);
+        countryNames = new ArrayList<String>(Arrays.asList(cData));
+        countryNamesListAdapter =
+                new ArrayAdapter<String>(
+                        getActivity(),          // The current context (this activity)
+                        R.layout.my_list_row, // The name of the layout ID.
+                        R.id.country_name, // The ID of the textview to populate.
+                        countryNames);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        final ListView listView = (ListView) rootView.findViewById(R.id.contact_list_view);
-        listView.setAdapter(contactsListAdapter);
+        final ListView listView = (ListView) rootView.findViewById(R.id.country_list_view);
+        listView.setAdapter(countryNamesListAdapter);
 
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
@@ -113,81 +116,142 @@ public class MainActivityFragment extends Fragment {
         return rootView;
     }
 
+    private String[] getCountryNamesFromJSON(String jsonResponse) throws JSONException{
 
+        JSONObject jsonObject = new JSONObject(jsonResponse);
+        JSONArray jsonArray = jsonObject.getJSONArray("geonames");
 
-class FetchCountryDataTask extends AsyncTask<Void, Void, Void> {
-    private final String LOG_TAG = FetchCountryDataTask.class.getSimpleName();
+        if (jsonArray == null){
+            Log.w("MainActivityFragment", "getCountryNamesFromJSON ---> jsonArray is null");
+            return null;
+        }
 
-    @Override
-    protected Void doInBackground(Void... params) {
+        String[] countryNames = new String[jsonArray.length()];
+        for(int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jCountry = jsonArray.getJSONObject(i);
+            String name = jCountry.getString("countryName");
+            countryNames[i] = name;
+        }
+        return countryNames;
+    }
 
-        HttpURLConnection urlConnection = null;
-        String jsonMsg = null;
-        String baseUrl =
-                "http://api.geonames.org/countryInfoJSON?"+
-                        "formatted=true"+
-                        "&lang="     + selectedLanguage +
-                        "&country="  + selectedCountry +
-                        "&username=demo"+
-                        "&style=full";
+    private String getDataForCountryJSON(String jsonResponse, String countryName, String fieldName) throws JSONException{
 
-        urlConnection = connect(baseUrl);
-        jsonMsg = getDataAndCloseConnection(urlConnection);
+        JSONObject jsonObject = new JSONObject(jsonResponse);
+        JSONArray jsonArray = jsonObject.getJSONArray("geonames");
+
+        if (jsonArray == null){
+            Log.w("MainActivityFragment", "getDataForCountryJSON ---> jsonArray is null");
+            return null;
+        }
+
+        String[] countryNames = new String[jsonArray.length()];
+        for(int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jCountry = jsonArray.getJSONObject(i);
+            String name = jCountry.getString("countryName");
+            if (name.equals(countryName)){
+                String data = jCountry.getString(fieldName);
+                return data;
+            }
+        }
         return null;
     }
 
 
-    private HttpURLConnection connect(String baseUrl) {
-        HttpURLConnection urlConnection = null;
+    class FetchCountryDataTask extends AsyncTask<Void, Void, String> {
+        private final String LOG_TAG = FetchCountryDataTask.class.getSimpleName();
 
-        try {
-            URL url = new URL(baseUrl);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-        } catch (IOException e) {
-            e.printStackTrace();
-            urlConnection = null;
+        @Override
+        protected String doInBackground(Void... params) {
+
+            HttpURLConnection urlConnection = null;
+            String jsonMsg = null;
+            String baseUrl = countryQuery;
+            urlConnection = connect(baseUrl);
+            jsonMsg = getDataAndCloseConnection(urlConnection);
+            return jsonMsg;
         }
-        return urlConnection;
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result != null) {
+                jsonCountryData = result;
+                countryNamesListAdapter.clear();
+                try {
+                    String [] data = getCountryNamesFromJSON(jsonCountryData);
+                    for(String countryName : data) {
+                        countryNamesListAdapter.add(countryName);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+               
+                // New data is back from the server.  Hooray!
+            }
+        }
+
+
+        private HttpURLConnection connect(String baseUrl) {
+            HttpURLConnection urlConnection = null;
+
+            try {
+                URL url = new URL(baseUrl);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+            } catch (IOException e) {
+                e.printStackTrace();
+                urlConnection = null;
+            }
+            return urlConnection;
+        }
+
+        private String getDataAndCloseConnection(HttpURLConnection urlConnection) {
+            String rvcMsg = null;
+            BufferedReader reader = null;
+
+            try {
+                InputStream inputStream = urlConnection.getInputStream();
+                if (inputStream != null) {
+                    reader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line;
+                    StringBuffer buffer = new StringBuffer();
+                    while ((line = reader.readLine()) != null) {
+                        buffer.append(line + "\n");
+                    }
+                    if (buffer.length() != 0) {
+                        rvcMsg = buffer.toString();
+                    }
+                }
+            } catch (IOException e) {
+                Log.e("MainActivityFragment", "Error accesing stream", e);
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        Log.e("MainActivityFragment", "Error closing stream", e);
+                    }
+                }
+            }
+
+            //jsonCountryData = new String(rvcMsg);
+            try {
+                String [] data = getCountryNamesFromJSON(rvcMsg);
+                StringBuffer bData = new StringBuffer();
+                for (int i = 0; i < data.length - 1; i++){
+                    bData.append(data[i] + ", ");
+                }
+                bData.append(data[data.length-1] + "\n");
+                Log.e("MainActivityFragment", bData.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return rvcMsg;
+        }
     }
-
-    private String getDataAndCloseConnection(HttpURLConnection urlConnection){
-        String rvcMsg = null;
-        BufferedReader reader = null;
-
-        try {
-            InputStream inputStream = urlConnection.getInputStream();
-            if (inputStream != null){
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                StringBuffer buffer = new StringBuffer();
-                while ((line = reader.readLine()) != null){
-                    buffer.append(line + "\n");
-                }
-                if (buffer.length() != 0){
-                    rvcMsg = buffer.toString();
-                }
-            }
-        }
-        catch (IOException e){
-            Log.e("MainActivityFragment", "Error accesing stream", e);
-        }
-        finally {
-            if (urlConnection != null){
-                urlConnection.disconnect();
-            }
-            if (reader != null){
-                try{
-                    reader.close();
-                } catch (IOException e) {
-                    Log.e("MainActivityFragment", "Error closing stream", e);
-                }
-            }
-        }
-
-        Log.i("MainActivityFragment", rvcMsg);
-        return rvcMsg;
-    }
-}
 }

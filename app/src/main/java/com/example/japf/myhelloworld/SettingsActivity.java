@@ -2,24 +2,16 @@ package com.example.japf.myhelloworld;
 
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
-import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.view.MenuItem;
 
 import java.util.List;
 
@@ -44,6 +36,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
 
+            /*
             if (preference instanceof ListPreference) {
                 // For list my_preferences, look up the correct display value in
                 // the preference's 'entries' list.
@@ -78,11 +71,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     }
                 }
 
-            } else {
+            } else {*/
                 // For all other my_preferences, set the summary to the value's
                 // simple string representation.
                 preference.setSummary(stringValue);
-            }
+            /*}*/
             return true;
         }
     };
@@ -91,10 +84,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * Helper method to determine if the device has an extra-large screen. For
      * example, 10" tablets are extra-large.
      */
+
+    /*
     private static boolean isXLargeTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
     }
+    */
 
     /**
      * Binds a preference's summary to its value. More specifically, when the
@@ -121,6 +117,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
+
+        getFragmentManager().beginTransaction().replace(android.R.id.content,
+                new GeneralPreferenceFragment()).commit();
     }
 
     /**
@@ -149,10 +148,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     /**
      * {@inheritDoc}
      */
+    /*
     @Override
     public boolean onIsMultiPane() {
         return isXLargeTablet(this);
     }
+    */
 
     /**
      * {@inheritDoc}
@@ -160,7 +161,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @Override
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onBuildHeaders(List<Header> target) {
-        loadHeadersFromResource(R.xml.pref_headers, target);
+        //loadHeadersFromResource(R.xml.pref_headers, target);
     }
 
     /**
@@ -170,8 +171,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName)
-                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
-                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+               // || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
+               // || NotificationPreferenceFragment.class.getName().equals(fragmentName)
+        ;
     }
 
     /**
@@ -190,8 +192,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+            //bindPreferenceSummaryToValue(findPreference("example_text"));
+            //bindPreferenceSummaryToValue(findPreference("example_list"));
         }
 
         @Override
@@ -209,6 +211,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * This fragment shows notification my_preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
+    /*
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class NotificationPreferenceFragment extends PreferenceFragment {
         @Override
@@ -234,11 +237,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             return super.onOptionsItemSelected(item);
         }
     }
-
+    */
     /**
      * This fragment shows data and sync my_preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
+    /*
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class DataSyncPreferenceFragment extends PreferenceFragment {
         @Override
@@ -264,4 +268,5 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             return super.onOptionsItemSelected(item);
         }
     }
+    */
 }

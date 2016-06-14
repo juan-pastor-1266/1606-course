@@ -3,29 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <PreferenceCategory android:title="Prices" />
-
-        <CheckBoxPreference
-            android:key="pref_show_prices"
-            android:title="@string/pref_show_prices"
-            android:summary="@string/pref_show_prices_summ"
-            android:defaultValue="false" />
-
-    <PreferenceCategory android:title="Locations" />
-
-        <EditTextPreference
-            android:key="@string/pref_country_key"
-            android:title="@string/pref_country_label"
-            android:defaultValue="@string/pref_country_default"
-            android:inputType="text"
-            android:singleLine="true" />
-
-        <ListPreference
-            android:key="pref_location"
-            android:title="@string/pref_country"
-            android:dialogTitle="@string/pref_country"
-            android:entries="@array/pref_country_names"
-            android:entryValues="@array/pref_country_codes"
-            android:defaultValue="@string/pref_country_default" />
+     <ListPreference
+         android:key="pref_location"
+         android:title="@string/pref_country"
+         android:dialogTitle="@string/pref_country"
+         android:entries="@array/pref_country_names"
+         android:entryValues="@array/pref_country_codes"
+         android:defaultValue="@string/pref_country_default" />
 
 </PreferenceScreen>
