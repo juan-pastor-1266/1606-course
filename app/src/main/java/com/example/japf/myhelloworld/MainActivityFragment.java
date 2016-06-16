@@ -1,5 +1,6 @@
 package com.example.japf.myhelloworld;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -16,9 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,10 +26,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static com.example.japf.myhelloworld.R.menu.menu_fragment;
+//import static com.example.japf.myhelloworld.R.menu.menu_fragment;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -38,7 +36,7 @@ import static com.example.japf.myhelloworld.R.menu.menu_fragment;
 public class MainActivityFragment extends Fragment {
 
     String jsonCountryData = "Empty Data";
-    List<String> countryNames;
+    List<String> countryNames = new ArrayList<String>();
     ArrayAdapter<String> countryNamesListAdapter;
 
     String countryQuery ="http://api.geonames.org/countryInfoJSON?formatted=true&lang=it&country=&username=coursejun2016&style=full";
@@ -57,11 +55,24 @@ public class MainActivityFragment extends Fragment {
         setHasOptionsMenu(true);
         SharedPreferences mySettings = getActivity().getSharedPreferences("pref_general", 0);
         selectedCountry = mySettings.getString("pref_country_key", "DE");
+
+        FetchCountryDataTask getDataTask = new FetchCountryDataTask();
+        getDataTask.execute();
     }
+
+
+    /*
+    @Override
+    public void onStart(){
+        FetchCountryDataTask getDataTask = new FetchCountryDataTask();
+        getDataTask.execute();
+    }
+    */
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(menu_fragment, menu);
+        inflater.inflate(R.menu.menu_fragment, menu);
     }
 
     @Override
@@ -79,18 +90,11 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-        // Fake data to populate the list of countries
-        String[] cData = {
-                "John", "Mary", "Joe", "Jane", "Elena", "Maud", "Phil", "Teo", "Nemo"
-        };
-
-        countryNames = new ArrayList<String>(Arrays.asList(cData));
         countryNamesListAdapter =
                 new ArrayAdapter<String>(
                         getActivity(),          // The current context (this activity)
-                        R.layout.my_list_row, // The name of the layout ID.
-                        R.id.country_name, // The ID of the textview to populate.
+                        R.layout.my_list_row,   // The name of the layout ID.
+                        R.id.country_name,      // The ID of the textview to populate.
                         countryNames);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -103,58 +107,33 @@ public class MainActivityFragment extends Fragment {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                        String countryData = "{\"geonames\": [{\n" + "  \"continent\": \"VOID\",\n" + "}]}";
+                        String cName = (String)parent.getItemAtPosition(position);
+                        Log.e("MainActivityFragment", "*******!!! OnItemClick ----------> " + cName);
+                        String cData = "cData: noData";
 
+                        try {
+                            cData = Utils.getDataForCountryJSON(jsonCountryData, cName);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        //String path = "C:\\Users\\japf\\Documents\\GitHub\\MyHelloWorld\\app\\src\\main\\res\\xml";
+                        SharedPreferences sharedPref = getContext().getSharedPreferences("pref_general", Context.MODE_PRIVATE);
+                        //SharedPreferences sharedPref = getContext().getSharedPreferences(path, Context.MODE_PRIVATE);
+                        String prefs = sharedPref.contains("pref_show_capital")?"yes":"no";
+                        String dataToShow = "\n" + "!!!!!" + prefs + "\n\n";
+
+                        Log.e("MainActivityFragment", "prefs ---> " + dataToShow);
+
+
+                        String countryData = cData;
                         Intent intent = new Intent(getActivity(), CountryActivity.class)
                                 .putExtra(Intent.EXTRA_TEXT, countryData);
                         startActivity(intent);
-
                     }
                 }
         );
-
         return rootView;
-    }
-
-    private String[] getCountryNamesFromJSON(String jsonResponse) throws JSONException{
-
-        JSONObject jsonObject = new JSONObject(jsonResponse);
-        JSONArray jsonArray = jsonObject.getJSONArray("geonames");
-
-        if (jsonArray == null){
-            Log.w("MainActivityFragment", "getCountryNamesFromJSON ---> jsonArray is null");
-            return null;
-        }
-
-        String[] countryNames = new String[jsonArray.length()];
-        for(int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jCountry = jsonArray.getJSONObject(i);
-            String name = jCountry.getString("countryName");
-            countryNames[i] = name;
-        }
-        return countryNames;
-    }
-
-    private String getDataForCountryJSON(String jsonResponse, String countryName, String fieldName) throws JSONException{
-
-        JSONObject jsonObject = new JSONObject(jsonResponse);
-        JSONArray jsonArray = jsonObject.getJSONArray("geonames");
-
-        if (jsonArray == null){
-            Log.w("MainActivityFragment", "getDataForCountryJSON ---> jsonArray is null");
-            return null;
-        }
-
-        String[] countryNames = new String[jsonArray.length()];
-        for(int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jCountry = jsonArray.getJSONObject(i);
-            String name = jCountry.getString("countryName");
-            if (name.equals(countryName)){
-                String data = jCountry.getString(fieldName);
-                return data;
-            }
-        }
-        return null;
     }
 
 
@@ -178,15 +157,13 @@ public class MainActivityFragment extends Fragment {
                 jsonCountryData = result;
                 countryNamesListAdapter.clear();
                 try {
-                    String [] data = getCountryNamesFromJSON(jsonCountryData);
+                    String [] data = Utils.getCountryNamesFromJSON(jsonCountryData);
                     for(String countryName : data) {
                         countryNamesListAdapter.add(countryName);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-               
-                // New data is back from the server.  Hooray!
             }
         }
 
@@ -237,10 +214,8 @@ public class MainActivityFragment extends Fragment {
                     }
                 }
             }
-
-            //jsonCountryData = new String(rvcMsg);
             try {
-                String [] data = getCountryNamesFromJSON(rvcMsg);
+                String [] data = Utils.getCountryNamesFromJSON(rvcMsg);
                 StringBuffer bData = new StringBuffer();
                 for (int i = 0; i < data.length - 1; i++){
                     bData.append(data[i] + ", ");
