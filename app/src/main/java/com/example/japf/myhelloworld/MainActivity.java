@@ -45,8 +45,14 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            Log.e("MainActivity", " !!!! onOptionsItemSelected --------- !!!! ");
+            Log.e("MainActivity", " !!!! onOptionsItemSelected: Action Settings Selected --------- !!!! ");
             startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }
+
+        if (id == R.id.action_graphics_1) {
+            Log.e("MainActivity", " !!!! onOptionsItemSelected: Graphics 1 Selected -------------- !!!! ");
+            startActivity(new Intent(this, Graphics1Activity.class));
             return true;
         }
 

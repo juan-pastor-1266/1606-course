@@ -37,6 +37,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.japf.myhelloworld.MainActivity" />
         </activity>
+        <activity
+            android:name=".Graphics1Activity"
+            android:label="@string/title_activity_graphics1"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.japf.myhelloworld.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
