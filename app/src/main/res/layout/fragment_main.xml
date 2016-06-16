@@ -11,7 +11,7 @@
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:id="@+id/country_list_view"
         android:layout_centerHorizontal="true"
         android:headerDividersEnabled="true" />

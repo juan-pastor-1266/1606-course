@@ -1,9 +1,9 @@
 package com.example.japf.myhelloworld;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,16 +31,10 @@ public class CountryActivityFragment extends Fragment {
             // Show data according to settings.
             String dataToShow = new String();
             dataToShow += Utils.getFieldForCountryJSON(countryData, "countryName") + "\n";
-            //Context context =
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-            //SharedPreferences sharedPref = getActivity().getSharedPreferences("pref_general", Context.MODE_PRIVATE);
-                    //
-
-            SharedPreferences sharedPref = getContext().getSharedPreferences("pref_general", Context.MODE_PRIVATE);
-
-            String prefs = sharedPref.contains("pref_show_capital")?"yes":"no";
-
-            dataToShow += ("\n" + "!!!!!" + prefs + "\n\n");
+            //String prefs = sharedPref.contains("pref_show_capital")?"yes":"no";
+            //dataToShow += ("\n" + "******" + prefs + "\n\n");
 
             if (sharedPref.getBoolean("pref_show_capital", false)) {
                 dataToShow += ("Capital: " + Utils.getFieldForCountryJSON(countryData, "capital") + "\n");

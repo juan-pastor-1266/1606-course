@@ -1,0 +1,22 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="pref_show_capital"
+        android:title="@string/pref_show_capital"
+        android:summary="@string/pref_show_capital_summary"
+        android:defaultValue="false" />
+
+    <CheckBoxPreference
+        android:key="pref_show_population"
+        android:title="@string/pref_show_population"
+        android:summary="@string/pref_show_population_summary"
+        android:defaultValue="true" />
+
+    <CheckBoxPreference
+        android:key="pref_show_languages"
+        android:title="@string/pref_show_languages"
+        android:summary="@string/pref_show_languages_summary"
+        android:defaultValue="false" />
+
+
+</PreferenceScreen>

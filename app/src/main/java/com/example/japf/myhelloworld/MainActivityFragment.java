@@ -1,6 +1,5 @@
 package com.example.japf.myhelloworld;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -53,7 +52,7 @@ public class MainActivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        SharedPreferences mySettings = getActivity().getSharedPreferences("pref_general", 0);
+        SharedPreferences mySettings = getActivity().getSharedPreferences("my_preferences", 0);
         selectedCountry = mySettings.getString("pref_country_key", "DE");
 
         FetchCountryDataTask getDataTask = new FetchCountryDataTask();
@@ -118,12 +117,14 @@ public class MainActivityFragment extends Fragment {
                         }
 
                         //String path = "C:\\Users\\japf\\Documents\\GitHub\\MyHelloWorld\\app\\src\\main\\res\\xml";
-                        SharedPreferences sharedPref = getContext().getSharedPreferences("pref_general", Context.MODE_PRIVATE);
+                        //SharedPreferences sharedPref = getActivity().getSharedPreferences("pref_general", Context.MODE_PRIVATE);
                         //SharedPreferences sharedPref = getContext().getSharedPreferences(path, Context.MODE_PRIVATE);
-                        String prefs = sharedPref.contains("pref_show_capital")?"yes":"no";
-                        String dataToShow = "\n" + "!!!!!" + prefs + "\n\n";
+                        //SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 
-                        Log.e("MainActivityFragment", "prefs ---> " + dataToShow);
+                        //String prefs = sharedPref.contains("pref_show_capital")?"yes":"no";
+                        // String dataToShow = "\n" + "????????" + prefs + "\n\n";
+
+                        //Log.e("MainActivityFragment", "prefs ---> " + dataToShow);
 
 
                         String countryData = cData;
