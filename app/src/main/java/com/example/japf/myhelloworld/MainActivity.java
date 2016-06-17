@@ -49,10 +49,28 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
-
-        if (id == R.id.action_graphics_1) {
+        else if (id == R.id.action_graphics_1) {
             Log.e("MainActivity", " !!!! onOptionsItemSelected: Graphics 1 Selected -------------- !!!! ");
-            startActivity(new Intent(this, Graphics1Activity.class));
+            String mode = "TimerMode";
+            Intent intent = new Intent(this, Graphics1Activity.class)
+                    .putExtra(Intent.EXTRA_TEXT, mode);
+            startActivity(intent);
+            return true;
+        }
+        else if (id == R.id.action_graphics_2) {
+            Log.e("MainActivity", " !!!! onOptionsItemSelected: Graphics 2 Selected -------------- !!!! ");
+            String mode = "TouchMode";
+            Intent intent = new Intent(this, Graphics1Activity.class)
+                    .putExtra(Intent.EXTRA_TEXT, mode);
+            startActivity(intent);
+            return true;
+        }
+        else if (id == R.id.action_graphics_3) {
+            Log.e("MainActivity", " !!!! onOptionsItemSelected: Graphics 3 Selected -------------- !!!! ");
+            String mode = "AccelMode";
+            Intent intent = new Intent(this, Graphics1Activity.class)
+                    .putExtra(Intent.EXTRA_TEXT, mode);
+            startActivity(intent);
             return true;
         }
 

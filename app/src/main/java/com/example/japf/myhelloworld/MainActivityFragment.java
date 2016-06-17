@@ -116,17 +116,6 @@ public class MainActivityFragment extends Fragment {
                             e.printStackTrace();
                         }
 
-                        //String path = "C:\\Users\\japf\\Documents\\GitHub\\MyHelloWorld\\app\\src\\main\\res\\xml";
-                        //SharedPreferences sharedPref = getActivity().getSharedPreferences("pref_general", Context.MODE_PRIVATE);
-                        //SharedPreferences sharedPref = getContext().getSharedPreferences(path, Context.MODE_PRIVATE);
-                        //SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-
-                        //String prefs = sharedPref.contains("pref_show_capital")?"yes":"no";
-                        // String dataToShow = "\n" + "????????" + prefs + "\n\n";
-
-                        //Log.e("MainActivityFragment", "prefs ---> " + dataToShow);
-
-
                         String countryData = cData;
                         Intent intent = new Intent(getActivity(), CountryActivity.class)
                                 .putExtra(Intent.EXTRA_TEXT, countryData);

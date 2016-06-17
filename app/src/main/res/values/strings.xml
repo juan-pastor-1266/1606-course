@@ -4,8 +4,14 @@
     <!-- Options menu -->
     <string name="action_settings">Settings</string>
     <string name="action_refresh" translatable="false">Refresh</string>
-    <string name="action_graphics_1" translatable="false">Go to Graphics 1</string>
+    <string name="action_graphics_1" translatable="false">Graphics with timer</string>
+    <string name="action_graphics_2" translatable="false">Graphics with touch event</string>
+    <string name="action_graphics_3" translatable="false">Graphics with accelerometer</string>
 
+    <!-- Draw modes -->
+    <string name="TimerMode">TimerMode</string>
+    <string name="TouchMode">TimerMode</string>
+    <string name="AccelMode">TimerMode</string>
 
     <!-- SETTINGS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
 
